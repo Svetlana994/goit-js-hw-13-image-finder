@@ -3,6 +3,7 @@ import ImagesApiService from './js/apiService';
 import LoadMoreBtn from './js/load-more-btn';
 import imagesListTpl from './js/templates/image-list.hbs';
 import onShowImage from './js/basicLightbox';
+import { errorNotification } from './js/pnotify';
 
 
 const refs = {
@@ -23,18 +24,21 @@ refs.galleryContainer.addEventListener('click', onShowImage)
 
 const imagesApiService = new ImagesApiService();
 
-function onSearch(e) {
+async function onSearch(e) {
     e.preventDefault();
 
     imagesApiService.query = e.currentTarget.elements.query.value.trim();
 
     if (imagesApiService.query) {
-    
+        try {
             clearContainer();
             imagesApiService.resetPage();
-            fetchImages();
+            await fetchImages();
             loadMoreBtn.show();
-
+        }
+        catch {
+            errorNotification();
+        }
     }
 }
 
